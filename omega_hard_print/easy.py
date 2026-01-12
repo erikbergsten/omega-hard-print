@@ -1,4 +1,5 @@
 from weasyprint import HTML, CSS
+from weasyprint.text.fonts import FontConfiguration
 from markdown_it import MarkdownIt
 
 html_raw = """
@@ -33,13 +34,14 @@ article {
 breaks_css = CSS(string=breaks_raw)
 
 def render(html_raw, out="out.pdf", layout="A4", breaks=True, stylesheet=None):
+    font_config = FontConfiguration()
     stylesheets = [page_format(layout)]
     if breaks:
         stylesheets.append(breaks_css)
     if stylesheet:
-        stylesheets.append(CSS(stylesheet))
+        stylesheets.append(CSS(stylesheet, font_config=font_config))
     html = HTML(string=html_raw)
-    html.write_pdf(out, stylesheets=stylesheets)
+    html.write_pdf(out, stylesheets=stylesheets, font_config=font_config)
 
 md = MarkdownIt()
 def render_md(md_raw, **kwargs):
