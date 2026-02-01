@@ -1,17 +1,35 @@
 from markdown_it import MarkdownIt
 from markdown_it.token import Token
+from . import graphs
 
-def dict_from_code(text):
-    out = {}
-    for pair in text.split(","):
-        try:
-            key, val = pair.split("=")
-            out[key] = val
-        except Exception:
-            out[pair] = ""
-    return out
+def transform_to_dict(kv_array):
+    # Dictionary comprehension for a succinct one-liner
+    return {
+        key: value 
+        for item in kv_array 
+        for key, value in [item.split("=", 1)]
+    }
 
 md = MarkdownIt()
+md.enable("table")
+
+
+def custom_fence_renderer(self, tokens, idx, options, env):
+    token = tokens[idx]
+    # info contains the string after the backticks (e.g., 'my-special-type')
+    infoline = token.info.strip() if token.info else ""
+    infos = infoline.split(" ")
+    info = infos[0]
+    args = transform_to_dict(infos[1:])
+    print("my infos:", args)
+
+    if graphs.get_graph(info):
+        # Return custom HTML for this specific type
+        return graphs.render_graph(info, token.content, args)
+    else:
+        return f"<pre><code>{token.content}</code></pre>"
+
+md.add_render_rule("fence", custom_fence_renderer)
 
 def group(tokens, headings=["h1", "h2"]):
     groups = []
@@ -27,7 +45,7 @@ def group(tokens, headings=["h1", "h2"]):
     groups.append(group)
     return groups
 
-def wrap(tokens, index, tag='article', class_name='page'):
+def wrap(tokens, index, tag='article', class_name='chapter'):
     open_tag = Token(f'{tag}_open', tag, 1)
     close_tag = Token(f'{tag}_close', tag, -1)
     open_tag.attrPush(["id", f"{class_name}-{index}"])
@@ -54,11 +72,45 @@ def flatten(pages):
         out.extend(page)
     return out
 
+def group_sections(tokens):
+    groups = []
+    group = []
+    for token in tokens:
+        if token.type == 'hr':
+            groups.append(group)
+            group = []
+        else:
+            group.append(token)
+    # add group in prgogress before returning (unless empty!)
+    if len(group) > 0:
+        groups.append(group)
+
+    return groups
+
 def sectionize(tokens):
-    sections = group(tokens, headings=["h1", "h2", "h3"])
+    sections = group_sections(tokens)
     for i in range(0, len(sections)):
         sections[i] = wrap(sections[i], i+1, tag="section", class_name="section")
     return flatten(sections)
+
+if __name__=='__main__':
+    raw_md = """# hello world
+
+some text
+
+---
+
+and more stuff
+
+## new text
+
+and stuff
+"""
+
+    pages = group(md.parse(raw_md))
+    print("the first page:", pages[0], "\n")
+    sections = sectionize(pages[0])
+    print("the first page sections:", sections)
 
 def md_to_html(md_raw, sections=True):
     # get flat tokens
@@ -79,4 +131,4 @@ def md_to_html(md_raw, sections=True):
     # flatten pages again
     paged_tokens = flatten(pages)
 
-    return md.renderer.render(paged_tokens, {}, {})
+    return md.renderer.render(paged_tokens, md.options, {})

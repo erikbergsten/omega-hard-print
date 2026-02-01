@@ -1,6 +1,7 @@
 from weasyprint import HTML, CSS
 from weasyprint.text.fonts import FontConfiguration
 from markdown_it import MarkdownIt
+import os
 
 html_raw = """
 <article id="page-1">
@@ -19,9 +20,26 @@ sizes = {
     "widescreen": "320mm 180mm", # Large format 16:9 widescreen
 }
 
+dimensions = {
+    "A4": [210, 297],
+    "landscape": [297, 210],
+    "widescreen": [320, 180],
+}
+
 def page_format(fmt = "A4"):
     size = sizes[fmt]
-    css = "@page { size: %s; }" % (size,)
+    width, height = dimensions[fmt]
+    css = """
+@page {
+    size: %s;
+}
+
+:root {
+    --page-width: %dmm;
+    --page-height: %dmm;
+}
+
+""" % (size, width, height)
     print("style:", css)
     return CSS(string=css)
 
@@ -33,31 +51,38 @@ article {
 """
 breaks_css = CSS(string=breaks_raw)
 
-def render(html_raw, out="out.pdf", layout="A4", breaks=True, stylesheet=None):
+watermark_positions = {
+    "top-left": "top: 0; left: 0;",
+    "top-right": "top: 0; right: 0;",
+    "bottom-right": "bottom: 0; right: 0;",
+    "bottom-left": "bottom: 0; left: 0;",
+}
+
+def watermark_css(position):
+    position_str = watermark_positions[position]
+    print("position:", position_str)
+    style = """
+#watermark {
+  position: fixed;
+  """ + position_str + """
+  height: 1cm;
+}
+    """
+    print("style:", style)
+    return CSS(string=style)
+
+def render(html_raw, out="out.pdf", layout="A4", watermark=None, watermark_position='bottom-left', breaks=True, stylesheet=None):
     font_config = FontConfiguration()
     stylesheets = [page_format(layout)]
+    html_final = html_raw
     if breaks:
         stylesheets.append(breaks_css)
     if stylesheet:
         stylesheets.append(CSS(stylesheet, font_config=font_config))
-    html = HTML(string=html_raw)
+    if watermark:
+        stylesheets.append(watermark_css(watermark_position))
+        html_final += f"<img id='watermark' src='{watermark}' />"
+    base_url = f"file://{os.getcwd()}/"
+    html = HTML(string=html_final, base_url=base_url)
     html.write_pdf(out, stylesheets=stylesheets, font_config=font_config)
 
-md = MarkdownIt()
-def render_md(md_raw, **kwargs):
-    html_raw = md.render(md_raw)
-    html = HTML(string=html_raw)
-    render(html, **kwargs)
-
-md_raw = """
-# hello world
-
-a bit of text!
-
-## subheading
-
-more text here!
-"""
-
-if __name__ == '__main__':
-    render_md(md_raw, out="outmd.pdf")

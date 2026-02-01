@@ -22,12 +22,33 @@ def parse_args() -> argparse.Namespace:
         help="Path to the stylesheet file",
     )
 
+    # watermark
+    parser.add_argument(
+        "--watermark",
+        type=str,
+        help="Path to the watermark file",
+    )
+    # watermark
+    parser.add_argument(
+        "--watermark-position",
+        type=str,
+        default="bottom-right",
+        help="Path position of the watermark",
+    )
+
     # named / optional arguments
     parser.add_argument(
         "--sections",
         type=bool,
         default=False,
         help="Whether or not to use sections (good for advanced styling)",
+    )
+
+    parser.add_argument(
+        "--print-html",
+        type=bool,
+        default=False,
+        help="Whether or not to print html (good for debugging)",
     )
 
     parser.add_argument(
@@ -56,6 +77,9 @@ def main() -> None:
     out = args.out
     layout = args.layout
     sections = args.sections
+    print_html = args.print_html
+    watermark = args.watermark
+    watermark_position = args.watermark_position
 
     # TODO: implement your tool's logic here
     print(f"Input file: {input_file}")
@@ -63,13 +87,17 @@ def main() -> None:
     print(f"Output file: {out}")
     print(f"Layout: {layout}")
     print(f"Sections: {sections}")
+    print(f"Print html: {print_html}")
+    print(f"Watermark: {watermark}")
+    print(f"Watermark Positoin: {watermark_position}")
 
     with open(input_file, "r") as f:
         md_raw = f.read()
 
     html = md_to_html(md_raw, sections=sections)
-    print(html)
-    render(html, out=out,  stylesheet=stylesheet, layout=layout)
+    if print_html:
+        print(html)
+    render(html, out=out,  stylesheet=stylesheet, layout=layout, watermark=watermark, watermark_position=watermark_position)
 
 if __name__ == "__main__":
     main()
