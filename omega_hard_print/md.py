@@ -2,6 +2,22 @@ from markdown_it import MarkdownIt
 from markdown_it.token import Token
 from . import graphs
 
+from pygments import highlight
+from pygments.lexers import get_lexer_by_name
+from pygments.formatters import html
+
+def highlight_code(code, lang, attrs):
+    """Syntax highlighting function for markdown-it-py."""
+    try:
+        # Look up the lexer for the specified language
+        lexer = get_lexer_by_name(lang)
+        # Generate highlighted HTML (without the outer <pre> wrapper)
+        return highlight(code, lexer, html.HtmlFormatter(nowrap=True))
+    except Exception:
+        # Fallback for unknown languages: return None to use default escaping
+        return None
+
+
 def transform_to_dict(kv_array):
     # Dictionary comprehension for a succinct one-liner
     return {
@@ -12,7 +28,6 @@ def transform_to_dict(kv_array):
 
 md = MarkdownIt()
 md.enable("table")
-
 
 def custom_fence_renderer(self, tokens, idx, options, env):
     token = tokens[idx]
@@ -27,7 +42,8 @@ def custom_fence_renderer(self, tokens, idx, options, env):
         # Return custom HTML for this specific type
         return graphs.render_graph(info, token.content, args)
     else:
-        return f"<pre><code>{token.content}</code></pre>"
+        code = highlight_code(token.content, info, args)
+        return f"<pre><code class='highlight'>{code}</code></pre>"
 
 md.add_render_rule("fence", custom_fence_renderer)
 

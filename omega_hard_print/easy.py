@@ -2,6 +2,12 @@ from weasyprint import HTML, CSS
 from weasyprint.text.fonts import FontConfiguration
 from markdown_it import MarkdownIt
 import os
+from pygments.formatters import HtmlFormatter
+
+formatter = HtmlFormatter(style='friendly', nobackground=True)
+css_definitions = formatter.get_style_defs('.highlight')
+
+code_css = CSS(string=css_definitions)
 
 html_raw = """
 <article id="page-1">
@@ -18,12 +24,14 @@ sizes = {
     "A4": "A4",
     "landscape": "A4 landscape",
     "widescreen": "320mm 180mm", # Large format 16:9 widescreen
+    "1610": "320mm 200mm", # Large format 16:0 widescreen
 }
 
 dimensions = {
     "A4": [210, 297],
     "landscape": [297, 210],
     "widescreen": [320, 180],
+    "1610": [320, 200],
 }
 
 def page_format(fmt = "A4"):
@@ -73,16 +81,16 @@ def watermark_css(position):
 
 def render(html_raw, out="out.pdf", layout="A4", watermark=None, watermark_position='bottom-left', breaks=True, stylesheet=None):
     font_config = FontConfiguration()
-    stylesheets = [page_format(layout)]
+    stylesheets = [page_format(layout), code_css]
+    base_url = f"file://{os.getcwd()}/"
     html_final = html_raw
     if breaks:
         stylesheets.append(breaks_css)
     if stylesheet:
-        stylesheets.append(CSS(stylesheet, font_config=font_config))
+        stylesheets.append(CSS(stylesheet, font_config=font_config, base_url=base_url))
     if watermark:
         stylesheets.append(watermark_css(watermark_position))
         html_final += f"<img id='watermark' src='{watermark}' />"
-    base_url = f"file://{os.getcwd()}/"
     html = HTML(string=html_final, base_url=base_url)
     html.write_pdf(out, stylesheets=stylesheets, font_config=font_config)
 

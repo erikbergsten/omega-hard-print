@@ -10,7 +10,8 @@ default_style = Style(
     major_label_font_size=18,
     legend_font_size=20,
     background='transparent',
-    plot_background='transparent'
+    plot_background='transparent',
+    stroke_width=2,
 )
 styles = {
     "neon": NeonStyle(background="transparent", plot_background="transparent"),
