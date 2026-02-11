@@ -12,6 +12,8 @@ description = "Make PDFs from markdown"
 requires-python = ">=3.8"
 dependencies = [
   "weasyprint",
+  "pygal",
+  "pygments",
   "markdown-it-py",
 ]
 
