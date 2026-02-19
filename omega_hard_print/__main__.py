@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 import argparse
 from .easy import render
-from .md import md_to_html
+from .parser import md_to_html
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
@@ -94,7 +94,7 @@ def main() -> None:
     with open(input_file, "r") as f:
         md_raw = f.read()
 
-    html = md_to_html(md_raw, sections=sections)
+    html = md_to_html(md_raw, article_tag="h1", section_tag="h2", toc_max_level=3)
     if print_html:
         print(html)
     render(html, out=out,  stylesheet=stylesheet, layout=layout, watermark=watermark, watermark_position=watermark_position)

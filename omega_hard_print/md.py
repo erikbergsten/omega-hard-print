@@ -47,11 +47,19 @@ def custom_fence_renderer(self, tokens, idx, options, env):
 
 md.add_render_rule("fence", custom_fence_renderer)
 
+def get_heading_level(token):
+    tag = token.tag
+    level = int(tag[1:])
+    return level
+
 def group(tokens, headings=["h1", "h2"]):
     groups = []
     group = None
-    for token in tokens:
+    for i in range(0, len(tokens)):
+        token = tokens[i]
         if token.type == "heading_open" and token.tag in headings:
+            next_token = tokens[i+1]
+            token.attrPush(["id", next_token.content])
             # emit old group, start new group
             if group:
                 groups.append(group)
