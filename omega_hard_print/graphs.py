@@ -87,7 +87,7 @@ def line_chart(text, args):
     return make_image_from_bytes(line_chart.render())
 
 graph_table = {
-    "horizontal-bars": horizontal_bars,
+    "bar-chart": horizontal_bars,
     "pie-chart": pie_chart,
     "line-chart": line_chart,
 }

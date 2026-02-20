@@ -79,7 +79,51 @@ def watermark_css(position):
     print("style:", style)
     return CSS(string=style)
 
-def render(html_raw, out="out.pdf", layout="A4", watermark=None, watermark_position='bottom-left', breaks=True, stylesheet=None):
+toc_css = CSS(string="""
+#toc {
+  page: no-chapter;
+  border-color: black;
+  font-size: 1rem;
+  font-weight: bold;
+  ul {
+    list-style: none;
+    padding-left: 0cm;
+    border-color: inherit;
+    li {
+      padding-top: .25cm;
+      ul {
+        font-size: 0.9rem;
+        a {
+          font-weight: normal;
+        }
+        li {
+          ul {
+          font-size: 0.8rem;
+          }
+        }
+      }
+      border-color: inherit;
+      .section {
+        break-before: never;
+        border-bottom: 1px dashed;
+        border-color: inherit;
+      }
+      a {
+        font-weight: bold;
+        color: inherit;
+        text-decoration: none;
+      }
+      a::after {
+        float: right;
+        content: target-counter(attr(href), page);
+      }
+
+    }
+  }
+}
+""")
+
+def render(html_raw, out="out.pdf", layout="A4", watermark=None, watermark_position='bottom-left', breaks=True, stylesheet=None, toc=True):
     font_config = FontConfiguration()
     stylesheets = [page_format(layout), code_css]
     base_url = f"file://{os.getcwd()}/"
@@ -88,6 +132,8 @@ def render(html_raw, out="out.pdf", layout="A4", watermark=None, watermark_posit
         stylesheets.append(breaks_css)
     if stylesheet:
         stylesheets.append(CSS(stylesheet, font_config=font_config, base_url=base_url))
+    if toc:
+        stylesheets.append(toc_css)
     if watermark:
         stylesheets.append(watermark_css(watermark_position))
         html_final += f"<img id='watermark' src='{watermark}' />"

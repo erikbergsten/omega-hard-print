@@ -1,51 +1,7 @@
 from markdown_it import MarkdownIt
 from markdown_it.token import Token
-from . import graphs
-
-from pygments import highlight
-from pygments.lexers import get_lexer_by_name
-from pygments.formatters import html
-
-def highlight_code(code, lang, attrs):
-    """Syntax highlighting function for markdown-it-py."""
-    try:
-        # Look up the lexer for the specified language
-        lexer = get_lexer_by_name(lang)
-        # Generate highlighted HTML (without the outer <pre> wrapper)
-        return highlight(code, lexer, html.HtmlFormatter(nowrap=True))
-    except Exception:
-        # Fallback for unknown languages: return None to use default escaping
-        return None
-
-
-def transform_to_dict(kv_array):
-    # Dictionary comprehension for a succinct one-liner
-    return {
-        key: value 
-        for item in kv_array 
-        for key, value in [item.split("=", 1)]
-    }
 
 md = MarkdownIt()
-md.enable("table")
-
-def custom_fence_renderer(self, tokens, idx, options, env):
-    token = tokens[idx]
-    # info contains the string after the backticks (e.g., 'my-special-type')
-    infoline = token.info.strip() if token.info else ""
-    infos = infoline.split(" ")
-    info = infos[0]
-    args = transform_to_dict(infos[1:])
-    print("my infos:", args)
-
-    if graphs.get_graph(info):
-        # Return custom HTML for this specific type
-        return graphs.render_graph(info, token.content, args)
-    else:
-        code = highlight_code(token.content, info, args)
-        return f"<pre><code class='highlight'>{code}</code></pre>"
-
-md.add_render_rule("fence", custom_fence_renderer)
 
 def get_heading_level(token):
     tag = token.tag

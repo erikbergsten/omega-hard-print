@@ -1,10 +1,7 @@
-from markdown_it import MarkdownIt
-from markdown_it.token import Token
 from bs4 import BeautifulSoup
 from io import StringIO
 import textwrap
-
-md = MarkdownIt()
+from .rendering import md, render
 
 def slugify(text):
     return text.lower().replace(' ', "-")
@@ -42,7 +39,7 @@ class Toc:
         if entry.level >= self.min_level:
             slug = slugify(entry.name) + "-header"
             title = entry.name.capitalize()
-            self.out.write(f'{indent}<li>\n{indent}  <a href="#{slug}"> {title} </a>\n')
+            self.out.write(f'{indent}<li>\n{indent}<div class="section"><a href="#{slug}"> {title} </a></div>\n')
         if entry.level < self.max_level and entry.children:
             self.out.write(f'{indent}  <ul>\n')
             for child in entry.children:
@@ -136,10 +133,20 @@ def parse(text):
     sections = sectionize(tokens)
     return sections
 
-def md_to_html(text, article_tag="h1", section_tag="h2", enable_toc=True, toc_min_level = 1, toc_max_level=99):
+def get_title_page(title, subtitle=None):
+    out = StringIO()
+    out.write(f'<article id="title-page"><h1>{title}</h1>')
+    if subtitle:
+        out.write(f'<h2>{subtitle}</h2>')
+    out.write('</article>')
+    return out.getvalue()
+
+def md_to_html(text, article_tag="h1", section_tag="h2", enable_toc=True, toc_min_level = 1, toc_max_level=99, title="no title", subtitle=None):
     sections = parse(text)
     articles = group(sections, article_tag)
     out = StringIO()
+    title_page = get_title_page(title, subtitle=subtitle)
+    out.write(title_page)
     out.write("<html><body>\n")
     if enable_toc:
         toc = Toc(build_toc(sections), min_level=toc_min_level, max_level=toc_max_level)
@@ -165,13 +172,8 @@ def md_to_html(text, article_tag="h1", section_tag="h2", enable_toc=True, toc_mi
             html = textwrap.indent(render(flatten(article)), "  ")
             out.write(html)
         out.write("</article>\n")
-
     out.write("</body></html>")
     return out.getvalue()
-
-def render(tokens):
-    html = md.renderer.render(tokens, md.options, {})
-    return html
 
 if __name__ == '__main__':
     f = open("groups.md", "r")
