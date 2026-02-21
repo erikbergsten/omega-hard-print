@@ -1,6 +1,5 @@
 from bs4 import BeautifulSoup
 from io import StringIO
-import textwrap
 from .rendering import md, render
 from itertools import groupby
 
@@ -170,7 +169,7 @@ def md_to_html(text, article_tag="h1", section_tag="h2", enable_toc=True, toc_mi
         toc = Toc(build_toc(sections), min_level=toc_min_level, max_level=toc_max_level)
         out.write('<article id="toc">\n')
         out.write('  <h1> Table of contents </h1>')
-        html = textwrap.indent(toc.render(), "  ")
+        html = toc.render()
         out.write(html)
         out.write('</article>')
     for article in articles:
@@ -186,7 +185,7 @@ def md_to_html(text, article_tag="h1", section_tag="h2", enable_toc=True, toc_mi
             broken = break_hrs(tokens)
             for i in range(len(broken)):
                 part = broken[i]
-                html = textwrap.indent(render(part), "    ")
+                html = render(part)
                 out.write(html)
                 if i != len(broken)-1:
                     out.write("\n  </section>\n<section>\n")

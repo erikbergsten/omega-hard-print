@@ -54,6 +54,7 @@ def custom_fence_renderer(self, tokens, idx, options, env):
         out.write(f'<div class="graph-container {info}">{graph_html}')
     else:
         code = highlight_code(token.content, info, args)
+        print("highlit code:", code)
         out.write(f'<div class="code-container"><pre><code class="highlight">{code}</code></pre>')
     if args.get('caption'):
         out.write(f'<span>{args["caption"]}</span>')

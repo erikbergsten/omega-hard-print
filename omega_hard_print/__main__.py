@@ -45,6 +45,7 @@ def parse_args() -> argparse.Namespace:
     )
 
     parser.add_argument(
+        "-o",
         "--out",
         type=str,
         default="out.pdf",
