@@ -2,6 +2,7 @@ from bs4 import BeautifulSoup
 from io import StringIO
 import textwrap
 from .rendering import md, render
+from itertools import groupby
 
 def slugify(text):
     return text.lower().replace(' ', "-")
@@ -37,7 +38,8 @@ class Toc:
 
     def render_entry(self, entry, indent="  "):
         if entry.level >= self.min_level:
-            slug = slugify(entry.name) + "-header"
+            slug = slugify(entry.name) + "-header-" + str(self.count)
+            self.count += 1
             title = entry.name.capitalize()
             self.out.write(f'{indent}<li>\n{indent}<div class="section"><a href="#{slug}"> {title} </a></div>\n')
         if entry.level < self.max_level and entry.children:
@@ -49,6 +51,7 @@ class Toc:
             self.out.write(f'{indent}</li>\n')
 
     def render(self):
+        self.count = 0
         self.out = StringIO()
         self.out.write('<ul>\n')
         for entry in self.entries:
@@ -123,13 +126,15 @@ def group(sections, tag):
     return groups
 
 def parse(text):
+    count = 0
     tokens = md.parse(text)
     for i in range(len(tokens)):
         token = tokens[i]
         if token.type == 'heading_open':
             next_token = tokens[i+1]
             title = slugify(next_token.content)
-            token.attrPush(["id", title+"-header"])
+            token.attrPush(["id", title+"-header-"+str(count)])
+            count += 1
     sections = sectionize(tokens)
     return sections
 
@@ -141,13 +146,26 @@ def get_title_page(title, subtitle=None):
     out.write('</article>')
     return out.getvalue()
 
-def md_to_html(text, article_tag="h1", section_tag="h2", enable_toc=True, toc_min_level = 1, toc_max_level=99, title="no title", subtitle=None):
+def break_hrs(tokens):
+    result = [list(group) for is_token, group in groupby(tokens, lambda x: x.type == "hr") if not is_token]
+    return result
+
+def md_to_html(text, article_tag="h1", section_tag="h2", enable_toc=True, toc_min_level = 1, toc_max_level=99, title=None, subtitle=None, title_page=None):
     sections = parse(text)
     articles = group(sections, article_tag)
     out = StringIO()
-    title_page = get_title_page(title, subtitle=subtitle)
-    out.write(title_page)
     out.write("<html><body>\n")
+    if title:
+        title_page = get_title_page(title, subtitle=subtitle)
+        out.write(title_page)
+    elif title_page:
+        # Read the provided title-page HTML and prepend it to the generated HTML
+        with open(title_page, "r", encoding="utf-8") as f:
+            title_html = f.read()
+            out.write('<article id="title-page">\n')
+            out.write(title_html)
+            out.write('</article>')
+
     if enable_toc:
         toc = Toc(build_toc(sections), min_level=toc_min_level, max_level=toc_max_level)
         out.write('<article id="toc">\n')
@@ -159,18 +177,20 @@ def md_to_html(text, article_tag="h1", section_tag="h2", enable_toc=True, toc_mi
         article_name = get_heading_name(article[0])
         article_id = slugify(article_name)
         out.write(f'<article id="{article_id}">\n')
-        if section_tag:
-            sections = group(article, section_tag)
-            for section in sections:
-                section_name = get_heading_name(section[0])
-                section_id = slugify(section_name)
-                out.write(f'  <section id="{section_id}">\n')
-                html = textwrap.indent(render(flatten(section)), "    ")
+        sections = group(article, section_tag)
+        for section in sections:
+            section_name = get_heading_name(section[0])
+            section_id = slugify(section_name)
+            out.write(f'  <section id="{section_id}">\n')
+            tokens = flatten(section)
+            broken = break_hrs(tokens)
+            for i in range(len(broken)):
+                part = broken[i]
+                html = textwrap.indent(render(part), "    ")
                 out.write(html)
-                out.write("  </section>\n")
-        else:
-            html = textwrap.indent(render(flatten(article)), "  ")
-            out.write(html)
+                if i != len(broken)-1:
+                    out.write("\n  </section>\n<section>\n")
+            out.write("  </section>\n")
         out.write("</article>\n")
     out.write("</body></html>")
     return out.getvalue()

@@ -51,10 +51,10 @@ def custom_fence_renderer(self, tokens, idx, options, env):
     if graphs.get_graph(info):
         # Return custom HTML for this specific type
         graph_html = graphs.render_graph(info, token.content, args)
-        out.write(f'<div class="graph-wrap {info}">{graph_html}')
+        out.write(f'<div class="graph-container {info}">{graph_html}')
     else:
         code = highlight_code(token.content, info, args)
-        out.write(f'<div class="code-wrap"><pre><code class="highlight">{code}</code></pre>')
+        out.write(f'<div class="code-container"><pre><code class="highlight">{code}</code></pre>')
     if args.get('caption'):
         out.write(f'<span>{args["caption"]}</span>')
     out.write('</div>')

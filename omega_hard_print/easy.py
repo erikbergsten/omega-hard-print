@@ -3,11 +3,15 @@ from weasyprint.text.fonts import FontConfiguration
 from markdown_it import MarkdownIt
 import os
 from pygments.formatters import HtmlFormatter
+from importlib import resources
 
 formatter = HtmlFormatter(style='friendly', nobackground=True)
 css_definitions = formatter.get_style_defs('.highlight')
 
 code_css = CSS(string=css_definitions)
+default_css_path = resources.files(__package__).joinpath("default.css")
+print("default css path:", default_css_path)
+default_css = CSS(default_css_path)
 
 html_raw = """
 <article id="page-1">
@@ -51,92 +55,16 @@ def page_format(fmt = "A4"):
     print("style:", css)
     return CSS(string=css)
 
-##  every "chapter" is wrappen in an <article /> as per weasyprint examples
-breaks_raw = """
-article {
-    break-before: always;
-}
-"""
-breaks_css = CSS(string=breaks_raw)
 
-watermark_positions = {
-    "top-left": "top: 0; left: 0;",
-    "top-right": "top: 0; right: 0;",
-    "bottom-right": "bottom: 0; right: 0;",
-    "bottom-left": "bottom: 0; left: 0;",
-}
-
-def watermark_css(position):
-    position_str = watermark_positions[position]
-    print("position:", position_str)
-    style = """
-#watermark {
-  position: fixed;
-  """ + position_str + """
-  height: 1cm;
-}
-    """
-    print("style:", style)
-    return CSS(string=style)
-
-toc_css = CSS(string="""
-#toc {
-  page: no-chapter;
-  border-color: black;
-  font-size: 1rem;
-  font-weight: bold;
-  ul {
-    list-style: none;
-    padding-left: 0cm;
-    border-color: inherit;
-    li {
-      padding-top: .25cm;
-      ul {
-        font-size: 0.9rem;
-        a {
-          font-weight: normal;
-        }
-        li {
-          ul {
-          font-size: 0.8rem;
-          }
-        }
-      }
-      border-color: inherit;
-      .section {
-        break-before: never;
-        border-bottom: 1px dashed;
-        border-color: inherit;
-      }
-      a {
-        font-weight: bold;
-        color: inherit;
-        text-decoration: none;
-      }
-      a::after {
-        float: right;
-        content: target-counter(attr(href), page);
-      }
-
-    }
-  }
-}
-""")
-
-def render(html_raw, out="out.pdf", layout="A4", watermark=None, watermark_position='bottom-left', breaks=True, stylesheet=None, toc=True):
+def render(html_raw, out="out.pdf", layout="A4", stylesheets=[], use_default_css=True):
     font_config = FontConfiguration()
-    stylesheets = [page_format(layout), code_css]
+    css = [page_format(layout), code_css]
+    if use_default_css:
+        css.append(default_css)
     base_url = f"file://{os.getcwd()}/"
     html_final = html_raw
-    if breaks:
-        stylesheets.append(breaks_css)
-    if stylesheet:
-        stylesheets.append(CSS(stylesheet, font_config=font_config, base_url=base_url))
-    if toc:
-        stylesheets.append(toc_css)
-    if watermark:
-        stylesheets.append(watermark_css(watermark_position))
-        html_final += f"<img id='watermark' src='{watermark}' />"
+    for stylesheet in stylesheets:
+        css.append(CSS(stylesheet, font_config=font_config, base_url=base_url))
     html = HTML(string=html_final, base_url=base_url)
-    html.write_pdf(out, stylesheets=stylesheets, font_config=font_config)
+    html.write_pdf(out, stylesheets=css, font_config=font_config)
 

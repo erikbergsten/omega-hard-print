@@ -1,0 +1,62 @@
+@font-face {
+  font-family: Fira Sans;
+  font-weight: 400;
+  src: url(FiraSans-Regular.ttf);
+}
+
+@page {
+  @top-left {
+    content: "static title";
+  }
+  @top-right {
+    content: counter(page);
+  }
+}
+@page no-chapter {
+  @top-left { background: none; content: none }
+  @top-center { content: none }
+  @top-right { content: none }
+}
+
+html {
+  color: #393939;
+  font-family: Fira Sans;
+  font-size: 11pt;
+  font-weight: 300;
+  line-height: 1.5;
+}
+
+#title-page {
+  display: flex;
+  flex-direction: column;
+  page: no-chapter;
+  align-items: center;
+  justify-content: center;
+  height: calc(var(--page-height) - 4cm);
+  h1, h2 {
+    text-transform: capitalize;
+  }
+}
+
+article#desired-state {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 3cm 1fr;
+  height: calc(var(--page-height) - 4cm);
+  section#desired-state {
+    grid-column: span 2;
+  }
+  section#present {
+    padding: 1cm;
+    border-right: 0.5mm solid black;
+  }
+  section#future {
+    padding: 1cm;
+    border-left: 0.5mm solid black;
+  }
+  section {
+    ul {
+      padding: 1rem;
+    }
+  }
+}

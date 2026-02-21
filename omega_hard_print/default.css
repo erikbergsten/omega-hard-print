@@ -1,0 +1,66 @@
+article {
+  break-before: always;
+}
+
+#toc {
+  page: no-chapter;
+  border-color: black;
+  font-size: 1rem;
+  font-weight: bold;
+  ul {
+    list-style: none;
+    padding-left: 0cm;
+    border-color: inherit;
+    li {
+      padding-top: .25cm;
+      ul {
+        font-size: 0.9rem;
+        a {
+          font-weight: normal;
+        }
+        li {
+          ul {
+          font-size: 0.8rem;
+          }
+        }
+      }
+      border-color: inherit;
+      .section {
+        break-before: never;
+        border-bottom: 1px dashed;
+        border-color: inherit;
+      }
+      a {
+        font-weight: bold;
+        color: inherit;
+        text-decoration: none;
+      }
+      a::after {
+        float: right;
+        content: target-counter(attr(href), page);
+      }
+    }
+  }
+}
+
+.code-container, .graph-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.code-container {
+  pre {
+    background-color: rgba(0,0,0,0.1);
+    display: inline-block;
+    text-align: left;
+    padding: 1rem;
+  }
+}
+
+.graph-container {
+  padding: 0.5cm 1cm;
+  img {
+    align-self: stretch;
+  }
+}
