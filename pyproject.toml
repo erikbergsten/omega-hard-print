@@ -25,4 +25,3 @@ ohprint = "omega_hard_print.__main__:main"
 
 [tool.hatch.build.targets.wheel]
 packages = ["omega_hard_print"]
-

@@ -56,12 +56,13 @@ def page_format(fmt = "A4"):
     return CSS(string=css)
 
 
-def render(html_raw, out="out.pdf", layout="A4", stylesheets=[], use_default_css=True):
+def render(html_raw, out="out.pdf", layout="A4", stylesheets=[], use_default_css=True, base_url=None):
     font_config = FontConfiguration()
     css = [page_format(layout), code_css]
     if use_default_css:
         css.append(default_css)
-    base_url = f"file://{os.getcwd()}/"
+    if not base_url:
+        base_url = f"file://{os.getcwd()}/"
     html_final = html_raw
     for stylesheet in stylesheets:
         css.append(CSS(stylesheet, font_config=font_config, base_url=base_url))

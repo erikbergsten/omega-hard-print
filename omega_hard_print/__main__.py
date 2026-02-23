@@ -53,6 +53,14 @@ def parse_args() -> argparse.Namespace:
     )
 
     parser.add_argument(
+        "-u",
+        "--base-url",
+        type=str,
+        default=None,
+        help="Base url for loading images and styles",
+    )
+
+    parser.add_argument(
         "--layout",
         type=str,
         default="A4",
@@ -122,6 +130,7 @@ def main() -> None:
         out=out,
         stylesheets=stylesheets,
         layout=layout,
+        base_url=args.base_url
     )
 
 
