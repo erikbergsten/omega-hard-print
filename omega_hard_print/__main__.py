@@ -1,9 +1,7 @@
 #!/usr/bin/env python3
 import argparse
-from .easy import render
-from .parser import md_to_html
-from . import templating
 from yaml import load, CLoader
+from . import print_pdf
 import sys
 
 def parse_args() -> argparse.Namespace:
@@ -106,10 +104,6 @@ def main() -> None:
     # Sort input files alphabetically for deterministic, filename-based ordering
     input_files = sorted(args.inputs)
 
-    stylesheets = args.stylesheets
-    out = args.out
-    layout = args.layout
-    print_html = args.print_html
     toc = args.toc
 
     # Concatenate all input markdown files in sorted order
@@ -121,33 +115,11 @@ def main() -> None:
     md_raw = "\n\n".join(md_parts)
 
     if args.template:
-        print("doing some templating!")
         data = load(sys.stdin.read(), Loader=CLoader)
-        print("data:", data)
-        md_raw = templating.render(md_raw, data)
+    else:
+        data = None
 
-    html = md_to_html(
-        md_raw,
-        article_tag="h1",
-        section_tag="h2",
-        enable_toc=toc,
-        toc_max_level=3,
-        title=args.title,
-        title_page=args.title_page,
-        subtitle=args.subtitle,
-    )
-
-    if print_html:
-        print(html)
-
-    render(
-        html,
-        out=out,
-        stylesheets=stylesheets,
-        layout=layout,
-        base_url=args.base_url
-    )
-
+    print_pdf(md_raw, toc=toc, title=args.title, subtitle=args.subtitle, title_page=args.title_page, stylesheets=args.stylesheets, base_url=args.base_url, data=data, layout=args.layout, print_html=args.print_html, out=args.out)
 
 if __name__ == "__main__":
     main()
