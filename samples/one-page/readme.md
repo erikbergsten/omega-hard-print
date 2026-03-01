@@ -1,4 +1,4 @@
-# A single page
+# {{ title }}
 
 Sample CSS file for a one page layout. Useful when you want to get as much
 content as possible on to one horizontal page as possible for marketing or
@@ -26,4 +26,4 @@ baz,3
 This example uses a simple two column layout - enough width for the piechart
 legend to be readable. If you have more content you can make it three columns.
 
-> A blockquote can make the page more interesting
+> {{ text }}

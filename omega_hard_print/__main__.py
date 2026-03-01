@@ -2,6 +2,9 @@
 import argparse
 from .easy import render
 from .parser import md_to_html
+from . import templating
+from yaml import load, CLoader
+import sys
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
@@ -36,6 +39,13 @@ def parse_args() -> argparse.Namespace:
         "--print-html",
         action="store_true",
         help="Whether or not to print html (good for debugging)",
+    )
+
+    parser.add_argument(
+        "-t",
+        "--template",
+        action="store_true",
+        help="Whether or not to treat input as a template. Data must be provided on stdin.",
     )
 
     parser.add_argument(
@@ -90,7 +100,6 @@ def parse_args() -> argparse.Namespace:
 
     return parser.parse_args()
 
-
 def main() -> None:
     args = parse_args()
 
@@ -110,6 +119,12 @@ def main() -> None:
             md_parts.append(f.read())
 
     md_raw = "\n\n".join(md_parts)
+
+    if args.template:
+        print("doing some templating!")
+        data = load(sys.stdin.read(), Loader=CLoader)
+        print("data:", data)
+        md_raw = templating.render(md_raw, data)
 
     html = md_to_html(
         md_raw,
