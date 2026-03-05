@@ -1,4 +1,3 @@
-from bs4 import BeautifulSoup
 from io import StringIO
 from .rendering import md, render
 from itertools import groupby

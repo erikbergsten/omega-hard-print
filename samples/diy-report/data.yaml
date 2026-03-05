@@ -1,0 +1,10 @@
+configuration:
+  - name: server_address
+    default: 192.168.1.1
+    description: the address of the server
+  - name: username
+    default: linux
+    description: the user you are identifying as
+  - name: password
+    default: linux
+    description: the password for that user

@@ -6,5 +6,6 @@ env = Environment(
 )
 
 def render(content, data):
-    template = env.from_string(content)
+    renderable = '{% import "macros.jinja" as m %}\n'+content
+    template = env.from_string(renderable)
     return template.render(data)
