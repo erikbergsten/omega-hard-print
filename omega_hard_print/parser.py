@@ -31,22 +31,18 @@ class TocEntry:
 class Toc:
     def __init__(self, entries, min_level=1, max_level=2):
         self.entries = entries
-        self.min_level = min_level
-        self.max_level = max_level
 
     def render_entry(self, entry, indent="  "):
-        if entry.level >= self.min_level:
-            slug = slugify(entry.name) + "-header-" + str(self.count)
-            self.count += 1
-            title = entry.name.capitalize()
-            self.out.write(f'{indent}<li>\n{indent}<div class="section"><a href="#{slug}"> {title} </a></div>\n')
-        if entry.level < self.max_level and entry.children:
+        slug = slugify(entry.name) + "-header-" + str(self.count)
+        self.count += 1
+        title = entry.name.capitalize()
+        self.out.write(f'{indent}<li>\n{indent}<div class="section"><a href="#{slug}"> {title} </a></div>\n')
+        if entry.children:
             self.out.write(f'{indent}  <ul>\n')
             for child in entry.children:
                 self.render_entry(child, indent+"    ")
             self.out.write(f'{indent}  </ul>\n')
-        if entry.level >= self.min_level:
-            self.out.write(f'{indent}</li>\n')
+        self.out.write(f'{indent}</li>\n')
 
     def render(self):
         self.count = 0

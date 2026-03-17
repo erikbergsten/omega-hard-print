@@ -2,6 +2,16 @@ article {
   break-before: always;
 }
 
+#title-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: calc(var(--page-height) - 4cm);
+  width: calc(var(--page-width) - 4cm);
+  text-transform: capitalize;
+}
+
 #toc {
   page: no-chapter;
   border-color: black;
@@ -9,7 +19,7 @@ article {
   font-weight: bold;
   ul {
     list-style: none;
-    padding-left: 0cm;
+    padding-left: 0.25cm;
     border-color: inherit;
     li {
       padding-top: .25cm;
