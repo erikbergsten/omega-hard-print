@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "omega-hard-print"
-version = "0.2.1"
+version = "0.2.2"
 authors = [
   { name="Erik Bergsten", email="erikbergsten94@gmail.com" },
 ]
@@ -16,6 +16,8 @@ dependencies = [
   "pygments",
   "markdown-it-py",
   "jinja2",
+  "pyyaml",
+  "python-frontmatter>=1.1.0",
 ]
 
 [tool.hatch.metadata]

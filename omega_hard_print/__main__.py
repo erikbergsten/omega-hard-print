@@ -3,6 +3,7 @@ import argparse
 from yaml import load, CLoader
 from . import print_pdf
 import sys
+import frontmatter
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
@@ -109,8 +110,8 @@ def main() -> None:
     # Concatenate all input markdown files in sorted order
     md_parts = []
     for path in input_files:
-        with open(path, "r") as f:
-            md_parts.append(f.read())
+        content = frontmatter.load(path)
+        md_parts.append(content.content)
 
     md_raw = "\n\n".join(md_parts)
 
