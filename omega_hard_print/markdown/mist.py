@@ -80,8 +80,20 @@ class OmegaRenderer(mistune.HTMLRenderer):
 md = mistune.create_markdown(renderer=None, escape=False, plugins=[table])
 html = mistune.create_markdown(renderer=OmegaRenderer(escape=False), escape=False, plugins=[table])
 
+def get_pages_style(ast):
+    filtered = filter(lambda token: token['type'] == 'heading' and token['attrs']['level'] == 1, ast)
+    texts = map(lambda token: token['children'][0]['raw'], filtered)
+    out = StringIO()
+    out.write("<style>\n")
+    for text in texts:
+        slug = slugify(text)
+        out.write("#" + slug + "{ page: " + slug + "; }\n")
+    out.write("</style>\n")
+    return out.getvalue()
+
 def md_to_html(raw, toc=False, title=None, subtitle=None, title_page=None):
     ast = md(raw)
+    pages_style = get_pages_style(ast)
     rendered = html(raw)
     if toc:
         toc = generate_toc(ast)
@@ -93,6 +105,9 @@ def md_to_html(raw, toc=False, title=None, subtitle=None, title_page=None):
         titlepage = generate_title_page(title, subtitle)
         rendered = titlepage + rendered
     return f"""<html>
+<head>
+{ pages_style }
+</head>
 <body>
 {rendered}
 </body>
