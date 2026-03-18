@@ -19,6 +19,4 @@ A list of all config parameters
 
 """
 
-#print(content)
-
-print_pdf(content, out="report.pdf", toc=True, title="The report", subtitle="of doom", print_md=True, stylesheets=['style.css'], data=data)
+print_pdf(content, out="report.pdf", toc=True, title="The report", subtitle="of doom", print_html=False, stylesheets=['style.css'], data=data)

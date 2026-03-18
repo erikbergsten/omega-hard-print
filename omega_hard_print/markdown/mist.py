@@ -10,7 +10,7 @@ def link(text, level):
     slug = slugify(text)
     return f'<li class="level-{level}"><a href="#{slug}">{text}</a></li>\n'
 
-def generate_toc(ast, title="table of content"):
+def generate_toc(ast, title="table of contents"):
     out = StringIO()
     out.write(f'<article id="toc">\n<h1> { title }</h1>\n<ul>\n')
     last_h1 = "none"
@@ -55,12 +55,12 @@ class OmegaRenderer(mistune.HTMLRenderer):
         heading_id = "-".join(self.heading_prefix)
         res = super().heading(text, level, **{"id":heading_id})
         if level == 1:
-            res = "<article>\n<section>\n"+res
+            res = f"<article id='{heading_id}'>\n<section>\n"+res
             if not self.first:
                 res = "</section>\n</article>\n"+ res
             self.first = False
         if level == 2:
-            res = "</section>\n<section>\n"+ res
+            res = f"</section>\n<section id='{ heading_id }'>\n"+ res
 
         return res
 
@@ -91,12 +91,12 @@ def get_pages_style(ast):
     out.write("</style>\n")
     return out.getvalue()
 
-def md_to_html(raw, toc=False, title=None, subtitle=None, title_page=None):
+def md_to_html(raw, toc=False, title=None, subtitle=None, title_page=None, toc_title="table of contents"):
     ast = md(raw)
     pages_style = get_pages_style(ast)
     rendered = html(raw)
     if toc:
-        toc = generate_toc(ast)
+        toc = generate_toc(ast, title=toc_title)
         rendered = toc + rendered
     if title_page:
         content = Path(title_page).read_text()

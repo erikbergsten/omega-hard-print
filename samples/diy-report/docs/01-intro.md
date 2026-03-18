@@ -10,7 +10,7 @@ It's only an intro, so dont expect too much!
 ### An even smaller section
 hehe
 
-```bar-chart
+```graph type=pie-chart caption="hello pie chart"
 foo,3
 bar,4
 ```

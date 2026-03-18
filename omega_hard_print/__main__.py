@@ -84,6 +84,13 @@ def parse_args() -> argparse.Namespace:
     )
 
     parser.add_argument(
+        "--toc-title",
+        type=str,
+        default="table of contents",
+        help="Title for the table of contents page",
+    )
+
+    parser.add_argument(
         "--subtitle",
         type=str,
         default=None,
@@ -120,7 +127,7 @@ def main() -> None:
     else:
         data = None
 
-    print_pdf(md_raw, toc=toc, title=args.title, subtitle=args.subtitle, title_page=args.title_page, stylesheets=args.stylesheets, base_url=args.base_url, data=data, layout=args.layout, print_html=args.print_html, out=args.out)
+    print_pdf(md_raw, toc=toc, toc_title=args.toc_title, title=args.title, subtitle=args.subtitle, title_page=args.title_page, stylesheets=args.stylesheets, base_url=args.base_url, data=data, layout=args.layout, print_html=args.print_html, out=args.out)
 
 if __name__ == "__main__":
     main()

@@ -2,7 +2,7 @@ from .markdown import md_to_html
 from . import templating
 from .rendering import render
 
-def print_pdf(raw, toc=False, title=None, title_page=None, subtitle=None, data=None, stylesheets=[], layout="A4", base_url=None, print_html=False, print_md=False, out="out.pdf"):
+def print_pdf(raw, toc=False, toc_title="table of contents", title=None, title_page=None, subtitle=None, data=None, stylesheets=[], layout="A4", base_url=None, print_html=False, print_md=False, out="out.pdf"):
 
     if data:
         raw = templating.render(raw, data)
@@ -13,6 +13,7 @@ def print_pdf(raw, toc=False, title=None, title_page=None, subtitle=None, data=N
     html = md_to_html(
         raw,
         toc=toc,
+        toc_title=toc_title,
         title=title,
         title_page=title_page,
         subtitle=subtitle,
@@ -28,5 +29,3 @@ def print_pdf(raw, toc=False, title=None, title_page=None, subtitle=None, data=N
         layout=layout,
         base_url=base_url
     )
-
-

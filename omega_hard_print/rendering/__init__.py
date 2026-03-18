@@ -1,6 +1,5 @@
 from weasyprint import HTML, CSS
 from weasyprint.text.fonts import FontConfiguration
-from markdown_it import MarkdownIt
 import os
 from pygments.formatters import HtmlFormatter
 from importlib import resources
@@ -12,22 +11,11 @@ code_css = CSS(string=css_definitions)
 default_css_path = resources.files(__package__).joinpath("default.css")
 default_css = CSS(default_css_path)
 
-html_raw = """
-<article id="page-1">
-    <h1> hello world </h1>
-    <p> an introductory text </p>
-</article>
-<article id="page-2">
-    <h2> a smaller thing </h2>
-    <p> a text about other stuff </p>
-</article>
-"""
-
 sizes = {
     "A4": "A4",
     "landscape": "A4 landscape",
-    "widescreen": "320mm 180mm", # Large format 16:9 widescreen
-    "1610": "320mm 200mm", # Large format 16:0 widescreen
+    "widescreen": "320mm 180mm",
+    "1610": "320mm 200mm",
 }
 
 dimensions = {
@@ -52,7 +40,6 @@ def page_format(fmt = "A4"):
 
 """ % (size, width, height)
     return CSS(string=css)
-
 
 def render(html_raw, out="out.pdf", layout="A4", stylesheets=[], use_default_css=True, base_url=None):
     font_config = FontConfiguration()

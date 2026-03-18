@@ -1,6 +1,5 @@
 import pygal
 from pygal.style import Style, NeonStyle
-
 import csv
 from io import StringIO
 import base64
@@ -21,10 +20,9 @@ def make_image_from_str(svg_str):
     return make_image_from_bytes(svg_str.encode("utf-8"))
 
 def make_image_from_bytes(svg_bytes):
-    encoded = base64.b64encode(svg_bytes).decode("utf-8")
     return f"""
         <img
-            src="data:image/svg+xml;base64,{encoded}"
+            src="{svg_bytes}"
             alt="auto generated graph"
         />
     """
@@ -54,22 +52,21 @@ def horizontal_bars(text, args):
     for row in rows:
         bar_chart.add(row[0], int(row[1]))
 
-    rendered = bar_chart.render()
+    rendered = bar_chart.render_data_uri()
     return make_image_from_bytes(rendered)
-
 
 def pie_chart(text, args):
     rows = read_csv(text)
     style = get_style(args)
 
-    pie_chart = pygal.Pie(style=style)
+    pie_chart = pygal.Pie()
     if args.get('title'):
         pie_chart.title = args['title']
 
     for row in rows:
         pie_chart.add(row[0], int(row[1]))
 
-    return make_image_from_bytes(pie_chart.render())
+    return make_image_from_bytes(pie_chart.render_data_uri())
 
 def line_chart(text, args):
     rows = read_csv(text)
@@ -81,10 +78,9 @@ def line_chart(text, args):
     line_chart.x_labels = rows[0]
     for row in rows[1:]:
         data = list(map(int, row[1:]))
-        print(f"adding data for {row[0]}:", data)
         line_chart.add(row[0], data)
 
-    return make_image_from_bytes(line_chart.render())
+    return make_image_from_bytes(line_chart.render_data_uri())
 
 graph_table = {
     "bar-chart": horizontal_bars,
