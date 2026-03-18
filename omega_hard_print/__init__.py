@@ -1,6 +1,6 @@
-from .parser import md_to_html
+from .markdown import md_to_html
 from . import templating
-from .easy import render
+from .rendering import render
 
 def print_pdf(raw, toc=False, title=None, title_page=None, subtitle=None, data=None, stylesheets=[], layout="A4", base_url=None, print_html=False, print_md=False, out="out.pdf"):
 
@@ -12,10 +12,7 @@ def print_pdf(raw, toc=False, title=None, title_page=None, subtitle=None, data=N
 
     html = md_to_html(
         raw,
-        article_tag="h1",
-        section_tag="h2",
-        enable_toc=toc,
-        toc_max_level=3,
+        toc=toc,
         title=title,
         title_page=title_page,
         subtitle=subtitle,

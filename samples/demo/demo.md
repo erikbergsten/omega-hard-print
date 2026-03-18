@@ -7,7 +7,7 @@ the rendered html which allows easier layouts of pages in a presentation.
 
 ---
 
-```line-chart caption="some important data"
+```graph type=line-chart caption="some important data"
 2005,2010,2015,2020,2025
 foo,1,2,3,4,5
 bar,1,2,1,2,3
@@ -24,7 +24,7 @@ subheadings.
 
 ---
 
-```pie-chart caption="some important data"
+```graph type=pie-chart caption="some important data"
 foo,1
 bar,2
 baz,3

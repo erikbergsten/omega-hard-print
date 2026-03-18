@@ -95,6 +95,6 @@ graph_table = {
 def get_graph(name):
     return graph_table.get(name)
 
-def render_graph(name, text, args):
-    f = get_graph(name)
+def render_graph(text, args):
+    f = get_graph(args['type'])
     return f(text, args)

@@ -1,11 +1,9 @@
-from . import graphs
-from markdown_it import MarkdownIt
+import shlex
 from pygments import highlight
 from pygments.lexers import get_lexer_by_name
 from pygments.formatters import html
 from io import StringIO
-import shlex
-
+from . import graphs
 
 def highlight_code(code, lang, attrs):
     """Syntax highlighting function for markdown-it-py."""
@@ -16,9 +14,7 @@ def highlight_code(code, lang, attrs):
         return highlight(code, lexer, html.HtmlFormatter(nowrap=True))
     except Exception as e:
         # Fallback for unknown languages: return None to use default escaping
-        print("code highlighting exception", e)
-        return None
-
+        raise Exception(f"code highlighting exception {e}")
 
 def transform_to_dict(kv_array):
     out = {}
@@ -33,12 +29,9 @@ def transform_to_dict(kv_array):
         out[key] = value
     return out
 
-
-def custom_fence_renderer(self, tokens, idx, options, env):
-    token = tokens[idx]
-    # info contains the string after the backticks (e.g., 'my-special-type')
-    infoline = token.info.strip() if token.info else ""
-    # Use shlex to respect quoted strings
+def parse_info(infoline):
+    if not infoline:
+        return None, {}
     parts = shlex.split(infoline)
     if not parts:
         info = ""
@@ -46,27 +39,19 @@ def custom_fence_renderer(self, tokens, idx, options, env):
     else:
         info = parts[0]
         args = transform_to_dict(parts[1:])
-    print("my infos:", args)
+    return info, args
+
+def render(code, info):
+    lang, args = parse_info(info)
     out = StringIO()
-    if graphs.get_graph(info):
+    if lang == 'graph':
         # Return custom HTML for this specific type
-        graph_html = graphs.render_graph(info, token.content, args)
+        graph_html = graphs.render_graph(code, args)
         out.write(f'<div class="graph-container {info}">{graph_html}')
     else:
-        code = highlight_code(token.content, info or "text", args)
-        print("highlit code:", code)
-        out.write(f'<div class="code-container"><pre><code class="highlight">{code}</code></pre>')
+        high_code = highlight_code(code, lang, args) if lang else code
+        out.write(f'<div class="code-container"><pre><code class="highlight">{high_code}</code></pre>')
     if args.get('caption'):
         out.write(f'<span>{args["caption"]}</span>')
     out.write('</div>')
     return out.getvalue()
-
-
-md = MarkdownIt()
-md.enable("table")
-md.add_render_rule("fence", custom_fence_renderer)
-
-
-def render(tokens):
-    html = md.renderer.render(tokens, md.options, {})
-    return html

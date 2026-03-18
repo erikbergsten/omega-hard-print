@@ -10,7 +10,6 @@ css_definitions = formatter.get_style_defs('.highlight')
 
 code_css = CSS(string=css_definitions)
 default_css_path = resources.files(__package__).joinpath("default.css")
-print("default css path:", default_css_path)
 default_css = CSS(default_css_path)
 
 html_raw = """
@@ -52,7 +51,6 @@ def page_format(fmt = "A4"):
 }
 
 """ % (size, width, height)
-    print("style:", css)
     return CSS(string=css)
 
 

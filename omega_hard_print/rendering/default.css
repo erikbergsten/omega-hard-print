@@ -16,32 +16,29 @@ article {
   page: no-chapter;
   border-color: black;
   font-size: 1rem;
-  font-weight: bold;
   ul {
     list-style: none;
     padding-left: 0.25cm;
     border-color: inherit;
+    font-weight: normal;
+    .level-1 {
+      font-weight: bold;
+      margin-left: 0.25cm;
+    }
+    .level-2 {
+      margin-left: 0.5cm;
+    }
+    .level-3 {
+      margin-left: 0.75cm;
+    }
+    .level-4 {
+      margin-left: 1cm;
+    }
     li {
-      padding-top: .25cm;
-      ul {
-        font-size: 0.9rem;
-        a {
-          font-weight: normal;
-        }
-        li {
-          ul {
-          font-size: 0.8rem;
-          }
-        }
-      }
+      border-bottom: 1px dashed;
       border-color: inherit;
-      .section {
-        break-before: never;
-        border-bottom: 1px dashed;
-        border-color: inherit;
-      }
       a {
-        font-weight: bold;
+        font-weight: inherit;
         color: inherit;
         text-decoration: none;
       }
