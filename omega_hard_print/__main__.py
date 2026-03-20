@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 import argparse
-from yaml import load, CLoader
+import yaml
 from . import print_pdf
 import sys
 import frontmatter
+from pathlib import Path
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
@@ -44,7 +45,15 @@ def parse_args() -> argparse.Namespace:
         "-t",
         "--template",
         action="store_true",
-        help="Whether or not to treat input as a template. Data must be provided on stdin.",
+        help="Whether or not to treat input as a template.",
+    )
+
+    parser.add_argument(
+        "-d",
+        "--data",
+        type=str,
+        default=None,
+        help="Data file (yaml or json) to template content with.",
     )
 
     parser.add_argument(
@@ -122,8 +131,12 @@ def main() -> None:
 
     md_raw = "\n\n".join(md_parts)
 
-    if args.template:
-        data = load(sys.stdin.read(), Loader=CLoader)
+    if args.data:
+        data_file = Path(args.data)
+        if data_file.exists():
+            data = yaml.safe_load(data_file.read_text())
+        else:
+            print(f"ERROR: no such file: {args.data}")
     else:
         data = None
 

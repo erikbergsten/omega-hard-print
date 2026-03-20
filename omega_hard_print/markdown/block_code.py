@@ -3,6 +3,7 @@ from pygments import highlight
 from pygments.lexers import get_lexer_by_name
 from pygments.formatters import html
 from io import StringIO
+import pandas
 from . import graphs
 
 def highlight_code(code, lang, attrs):
@@ -41,6 +42,10 @@ def parse_info(infoline):
         args = transform_to_dict(parts[1:])
     return info, args
 
+def render_table(code, args):
+    df = pandas.read_csv(StringIO(code))
+    return df.to_html(index=False, justify='start')
+
 def render(code, info):
     lang, args = parse_info(info)
     out = StringIO()
@@ -48,6 +53,9 @@ def render(code, info):
         # Return custom HTML for this specific type
         graph_html = graphs.render_graph(code, args)
         out.write(f'<div class="graph-container {info}">{graph_html}')
+    elif lang == 'table':
+        table = render_table(code, args)
+        out.write(table)
     else:
         high_code = highlight_code(code, lang, args) if lang else code
         out.write(f'<div class="code-container"><pre><code class="highlight">{high_code}</code></pre>')

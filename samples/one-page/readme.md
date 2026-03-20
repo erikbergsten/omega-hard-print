@@ -17,7 +17,7 @@ sorted = my_array.sort()
 print("the sorted list of numbers:", sorted)
 ```
 
-```pie-chart caption="foo vs bar vs baz"
+```graph type=pie-chart caption="foo vs bar vs baz"
 foo,1
 bar,2
 baz,3

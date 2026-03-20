@@ -2,6 +2,13 @@
 
 A short introductory chapter. Not much to see here.
 
+```table
+player,score
+erik,2
+foo,1
+bar,2
+```
+
 ## About this intro
 
 It's only an intro, so dont expect too much!

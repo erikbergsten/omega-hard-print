@@ -20,12 +20,12 @@ def make_image_from_str(svg_str):
     return make_image_from_bytes(svg_str.encode("utf-8"))
 
 def make_image_from_bytes(svg_bytes):
-    return f"""
+    svg =f"""
         <img
             src="{svg_bytes}"
-            alt="auto generated graph"
         />
     """
+    return svg
 
 def read_csv(text):
     f = StringIO(text)
@@ -59,7 +59,7 @@ def pie_chart(text, args):
     rows = read_csv(text)
     style = get_style(args)
 
-    pie_chart = pygal.Pie()
+    pie_chart = pygal.Pie(style=style)
     if args.get('title'):
         pie_chart.title = args['title']
 
