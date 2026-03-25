@@ -36,6 +36,18 @@ def parse_args() -> argparse.Namespace:
     )
 
     parser.add_argument(
+        "-v",
+        "--variable",
+        dest="variables",
+        default=[],
+        action="append",
+        help=(
+            "variables"
+            "provide any number of key value pairs which will be set as css variables (-v foo=bar will make var(--foo) available in css)"
+        ),
+    )
+
+    parser.add_argument(
         "--print-html",
         action="store_true",
         help="Whether or not to print html (good for debugging)",
@@ -140,7 +152,9 @@ def main() -> None:
     else:
         data = None
 
-    print_pdf(md_raw, toc=toc, toc_title=args.toc_title, title=args.title, subtitle=args.subtitle, title_page=args.title_page, stylesheets=args.stylesheets, base_url=args.base_url, data=data, layout=args.layout, print_html=args.print_html, out=args.out)
+    variables = dict(map(lambda x: x.split("="), args.variables))
+
+    print_pdf(md_raw, toc=toc, toc_title=args.toc_title, title=args.title, subtitle=args.subtitle, title_page=args.title_page, stylesheets=args.stylesheets, base_url=args.base_url, data=data, layout=args.layout, print_html=args.print_html, out=args.out, template=args.template, variables=variables)
 
 if __name__ == "__main__":
     main()

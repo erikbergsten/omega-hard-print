@@ -6,8 +6,8 @@ from . import block_code
 def slugify(text):
     return '-'.join(text.lower().split(' '))
 
-def link(text, level):
-    slug = slugify(text)
+def link(href, text, level):
+    slug = slugify(href)
     return f'<li class="level-{level}"><a href="#{slug}">{text}</a></li>\n'
 
 def generate_toc(ast, title="table of contents"):
@@ -21,9 +21,9 @@ def generate_toc(ast, title="table of contents"):
         text = token['children'][0]['raw']
         if level == 1:
             last_h1 = text
-            out.write(link(text, level))
+            out.write(link(text, text, level))
         elif level == 2:
-            out.write(link(last_h1 + " " + text, level))
+            out.write(link(last_h1 + " " + text, text, level))
     out.write('</ul>\n</article>')
     return out.getvalue()
 

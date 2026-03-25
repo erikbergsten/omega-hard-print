@@ -1,0 +1,17 @@
+{% macro table(data, columns) -%}
+<table>
+<thead>
+<tr>
+{% for column in columns %} <th> {{ column }} </th> {% endfor %}
+</tr>
+</thead>
+<tbody>
+{% for row in data -%}
+<tr>
+{% for column in columns %}
+<td class='{{ column }}'> {{ row[column] }} </td> {% endfor %}
+</tr>
+{% endfor %}
+</tbody>
+</table>
+{%- endmacro %}

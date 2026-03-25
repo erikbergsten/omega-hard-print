@@ -9,6 +9,7 @@ article {
 
 #title-page {
   display: flex;
+  page: title-page;
   flex-direction: column;
   align-items: center;
   justify-content: center;
@@ -18,7 +19,7 @@ article {
 }
 
 #toc {
-  page: no-chapter;
+  page: toc;
   border-color: black;
   font-size: 1rem;
   text-transform: capitalize;

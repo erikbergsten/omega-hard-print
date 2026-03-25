@@ -3,6 +3,7 @@ from weasyprint.text.fonts import FontConfiguration
 import os
 from pygments.formatters import HtmlFormatter
 from importlib import resources
+from io import StringIO
 
 formatter = HtmlFormatter(style='friendly', nobackground=True)
 css_definitions = formatter.get_style_defs('.highlight')
@@ -41,16 +42,26 @@ def page_format(fmt = "A4"):
 """ % (size, width, height)
     return CSS(string=css)
 
-def render(html_raw, out="out.pdf", layout="A4", stylesheets=[], use_default_css=True, base_url=None):
+def variable_css(variables):
+    out = StringIO()
+    out.write(":root {\n")
+    for k, v in variables.items():
+        out.write(f'--{k}: "{v}";\n')
+    out.write("}\n")
+    css = out.getvalue()
+    return CSS(string=css)
+
+def render(html_raw, out="out.pdf", layout="A4", stylesheets=[], use_default_css=True, base_url=None, variables={}):
     font_config = FontConfiguration()
     css = [page_format(layout), code_css]
     if use_default_css:
         css.append(default_css)
     if not base_url:
         base_url = f"file://{os.getcwd()}/"
+    if len(variables) > 0:
+        css.append(variable_css(variables))
     html_final = html_raw
     for stylesheet in stylesheets:
         css.append(CSS(stylesheet, font_config=font_config, base_url=base_url))
     html = HTML(string=html_final, base_url=base_url)
     html.write_pdf(out, stylesheets=css, font_config=font_config)
-
