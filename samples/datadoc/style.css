@@ -1,0 +1,73 @@
+:root {
+  font-family: arial;
+  --color-bg-1: white;
+  --color-bg-2: #eee;
+  --color-bg-3: #ddd;
+  --color-accent-1: #fa6607;
+}
+
+@page configuration-reference {
+  margin: 0;
+}
+
+@page {
+  @bottom-right {
+    content: var(--footer);
+  }
+}
+
+@page toc {
+  @bottom-right {
+    content: none;
+  }
+}
+
+#title-page {
+  gap: 1rem;
+  h1, h2 {
+    margin: 0;
+  }
+  h2 {
+    text-transform: none;
+  }
+}
+
+#configuration-reference {
+  h1 {
+    margin: 0;
+    text-align: center;
+    background-color: var(--color-accent-1);
+    color: white;
+  }
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  th {
+    text-transform: capitalize;
+    background-color: var(--color-accent-1);
+    color: white;
+    font-weight: bold;
+    padding: 0.5rem;
+  }
+  td {
+    padding: 0.25rem;
+    vertical-align: top;
+  }
+  tr:nth-child(even) {
+    background-color: var(--color-bg-2);
+  }
+  .name {
+    font-weight: bold;
+    color: #333;
+  }
+  .default {
+    font-style: italic;
+
+    font-size: 0.8rem;
+  }
+  .description {
+    font-size: 0.8rem;
+  }
+}

@@ -1,0 +1,15 @@
+variables:
+  - name: S3_ENDPOINT
+    description: |
+      The endpoint for your S3 provider.
+    default: s301.cloudstorage.aws.com
+  - name: S3_ACCESS_KEY
+    description: |
+      Your S3 access key, sometimes called "access key id"
+  - name: S3_SECRET_KEY
+    description: |
+      Your S3 secret key, sometimes called "secret access key"
+  - name: S3_BUCKET
+    description: |
+      The bucket where you store images, logs and backups.
+      The bucket where you store images, logs and backups.
