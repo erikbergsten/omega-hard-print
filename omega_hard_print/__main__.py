@@ -54,6 +54,12 @@ def parse_args() -> argparse.Namespace:
     )
 
     parser.add_argument(
+        "--print-data",
+        action="store_true",
+        help="Whether or not to print template data",
+    )
+
+    parser.add_argument(
         "-t",
         "--template",
         action="store_true",
@@ -63,9 +69,10 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "-d",
         "--data",
-        type=str,
-        default=None,
-        help="Data file (yaml or json) to template content with.",
+        dest="data",
+        default=[],
+        action="append",
+        help="Data file(s) (yaml or json) to template content with.",
     )
 
     parser.add_argument(
@@ -142,15 +149,24 @@ def main() -> None:
         md_parts.append(content.content)
 
     md_raw = "\n\n".join(md_parts)
-
-    if args.data:
-        data_file = Path(args.data)
-        if data_file.exists():
-            data = yaml.safe_load(data_file.read_text())
+    data = {}
+    for data_entry in args.data:
+        if "=" in data_entry:
+            key, path = data_entry.split('=')
+            data_file = Path(path)
+            if data_file.exists():
+                data[key] = yaml.safe_load(data_file.read_text())
+            else:
+                print(f"ERROR: no such file: {path}")
         else:
-            print(f"ERROR: no such file: {args.data}")
-    else:
-        data = None
+            data_file = Path(data_entry)
+            if data_file.exists():
+                data = data | yaml.safe_load(data_file.read_text())
+            else:
+                print(f"ERROR: no such file: {data}")
+    if args.print_data:
+        print("DATA:\n---")
+        print(yaml.dump(data) + "---")
 
     variables = dict(map(lambda x: x.split("="), args.variables))
 
