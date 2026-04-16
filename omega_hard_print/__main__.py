@@ -82,6 +82,12 @@ def parse_args() -> argparse.Namespace:
     )
 
     parser.add_argument(
+        "--sort-input",
+        action="store_true",
+        help="Whether or not to sort input files.",
+    )
+
+    parser.add_argument(
         "-o",
         "--out",
         type=str,
@@ -138,7 +144,10 @@ def main() -> None:
     args = parse_args()
 
     # Sort input files alphabetically for deterministic, filename-based ordering
-    input_files = sorted(args.inputs)
+    if args.sort_input:
+        input_files = sorted(args.inputs)
+    else:
+        input_files = args.inputs
 
     toc = args.toc
 
