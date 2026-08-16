@@ -1,3 +1,0 @@
-# Operations
-
-improtant operational instructions

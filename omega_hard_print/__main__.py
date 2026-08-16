@@ -54,12 +54,6 @@ def parse_args() -> argparse.Namespace:
     )
 
     parser.add_argument(
-        "--print-data",
-        action="store_true",
-        help="Whether or not to print template data",
-    )
-
-    parser.add_argument(
         "-t",
         "--template",
         action="store_true",
@@ -158,28 +152,10 @@ def main() -> None:
         md_parts.append(content.content)
 
     md_raw = "\n\n".join(md_parts)
-    data = {}
-    for data_entry in args.data:
-        if "=" in data_entry:
-            key, path = data_entry.split('=')
-            data_file = Path(path)
-            if data_file.exists():
-                data[key] = yaml.safe_load(data_file.read_text())
-            else:
-                print(f"ERROR: no such file: {path}")
-        else:
-            data_file = Path(data_entry)
-            if data_file.exists():
-                data = data | yaml.safe_load(data_file.read_text())
-            else:
-                print(f"ERROR: no such file: {data}")
-    if args.print_data:
-        print("DATA:\n---")
-        print(yaml.dump(data) + "---")
 
     variables = dict(map(lambda x: x.split("="), args.variables))
 
-    print_pdf(md_raw, toc=toc, toc_title=args.toc_title, title=args.title, subtitle=args.subtitle, title_page=args.title_page, stylesheets=args.stylesheets, base_url=args.base_url, data=data, layout=args.layout, print_html=args.print_html, out=args.out, template=args.template, variables=variables)
+    print_pdf(md_raw, toc=toc, toc_title=args.toc_title, title=args.title, subtitle=args.subtitle, title_page=args.title_page, stylesheets=args.stylesheets, base_url=args.base_url, layout=args.layout, print_html=args.print_html, out=args.out, variables=variables)
 
 if __name__ == "__main__":
     main()
