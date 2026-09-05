@@ -25,7 +25,7 @@ dependencies = [
 allow-direct-references = true
 
 [project.scripts]
-omega_hard_print = "omega_hard_print.__main__:main"
+omega_hard_print = "ohp.__main__:main"
 
 [tool.hatch.build.targets.wheel]
 packages = ["omega_hard_print"]
