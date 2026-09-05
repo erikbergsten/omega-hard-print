@@ -94,4 +94,10 @@ def parse_args():
         help="Whether or not to print html (good for debugging)",
     )
 
+    parser.add_argument(
+        "--no-default-style",
+        action="store_true",
+        help="Whether or not disable default styles.",
+    )
+
     return parser.parse_args()

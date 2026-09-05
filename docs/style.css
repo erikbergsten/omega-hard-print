@@ -5,12 +5,3 @@
   align-items: center;
   height: calc(var(--page-height) - 4cm);
 }
-
-pre {
-  display: block;
-  margin: auto;
-  max-width: 80%;
-  background-color: rgba(0,0,0,0.1);
-  text-align: left;
-  padding: 1rem;
-}

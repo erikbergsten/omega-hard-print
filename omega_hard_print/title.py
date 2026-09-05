@@ -3,10 +3,10 @@ from pathlib import Path
 
 def generate_title_page(title, subtitle=None):
     out = StringIO()
-    out.write(f'<article id="title-page">\n<h1>{title}</h1>\n')
+    out.write(f'<div id="title-page">\n<h1>{title}</h1>\n')
     if subtitle:
         out.write(f'<h2>{subtitle}</h2>\n')
-    out.write('</article>\n')
+    out.write('</div>\n')
     return out.getvalue()
 
 def get_title(args):

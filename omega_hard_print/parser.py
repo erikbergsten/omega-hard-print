@@ -10,6 +10,9 @@ markdown = mistune.create_markdown(
     ]
 )
 
+def wrap(html):
+    return f"<html><body>{html}</body></html>"
+
 def md_to_html(raw, toc=0):
     """
     Converts markdown to html and injects a table of contents if toc is set.
