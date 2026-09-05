@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "omega-hard-print"
-version = "0.3.6"
+version = "0.4.0"
 authors = [
   { name="Erik Bergsten", email="erikbergsten94@gmail.com" },
 ]
@@ -12,20 +12,14 @@ description = "Make PDFs from markdown"
 requires-python = ">=3.8"
 dependencies = [
   "weasyprint",
-  "pygal",
-  "pygments",
-  "jinja2",
-  "pyyaml",
-  "python-frontmatter>=1.1.0",
   "mistune>=3.2.0",
-  "pandas>=2.0.3",
 ]
 
 [tool.hatch.metadata]
 allow-direct-references = true
 
 [project.scripts]
-omega_hard_print = "ohp.__main__:main"
+omega_hard_print = "omega_hard_print.__main__:main"
 
 [tool.hatch.build.targets.wheel]
 packages = ["omega_hard_print"]
