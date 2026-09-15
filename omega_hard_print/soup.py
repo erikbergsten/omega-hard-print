@@ -67,8 +67,16 @@ def wrap_code(html):
         pre_tag.wrap(wrapper)
     return str(soup)
 
+def fix_toc(html):
+    soup = BS(html, "html.parser")
+    toc_links = soup.select("details a")
+    for a_tag in toc_links:
+        wrapper = soup.new_tag("div")
+        a_tag.wrap(wrapper)
+    return str(soup)
+
 def format(html, max_level=6):
-    return wrap_code(group(html, max_level))
+    return fix_toc(wrap_code(group(html, max_level)))
 
 def pretty_print(html):
     print(BS(html, "html.parser").prettify())
