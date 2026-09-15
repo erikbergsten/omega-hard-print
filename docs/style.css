@@ -5,3 +5,37 @@
   align-items: center;
   height: calc(var(--page-height) - 4cm);
 }
+
+.h2 {
+  break-before: always;
+}
+
+@page configuration-reference {
+  background-color: #fcc;
+  margin: 0;
+}
+
+.toc {
+  div {
+    border-bottom: 1px dashed black;
+    margin: 0.25cm 0;
+  }
+  a {
+    text-decoration: none;
+    color: black;
+    &::after {
+      content: target-counter(attr(href), page);
+      float: right;
+    }
+  }
+  ul {
+    list-style-type: none;
+    padding: 0 0 0 0.25cm;
+    font-weight: bold;
+    ul {
+      font-weight: normal;
+    }
+    display: flex;
+    flex-direction: column;
+  }
+}
