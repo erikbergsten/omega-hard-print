@@ -1,67 +1,31 @@
 from weasyprint import HTML, CSS
 from weasyprint.text.fonts import FontConfiguration
-import os
-from pygments.formatters import HtmlFormatter
-from importlib import resources
 from io import StringIO
+import os
 
-formatter = HtmlFormatter(style='friendly', nobackground=True)
-css_definitions = formatter.get_style_defs('.highlight')
+from .styles import default_css, page_format, variable_css
 
-code_css = CSS(string=css_definitions)
-default_css_path = resources.files(__package__).joinpath("default.css")
-default_css = CSS(default_css_path)
+font_config = FontConfiguration()
 
-sizes = {
-    "A4": "A4",
-    "landscape": "A4 landscape",
-    "widescreen": "320mm 180mm",
-    "1610": "320mm 200mm",
-}
-
-dimensions = {
-    "A4": [210, 297],
-    "landscape": [297, 210],
-    "widescreen": [320, 180],
-    "1610": [320, 200],
-}
-
-def page_format(fmt = "A4"):
-    size = sizes[fmt]
-    width, height = dimensions[fmt]
-    css = """
-@page {
-    size: %s;
-}
-
-:root {
-    --page-width: %dmm;
-    --page-height: %dmm;
-}
-
-""" % (size, width, height)
-    return CSS(string=css)
-
-def variable_css(variables):
-    out = StringIO()
-    out.write(":root {\n")
-    for k, v in variables.items():
-        out.write(f'--{k}: "{v}";\n')
-    out.write("}\n")
-    css = out.getvalue()
-    return CSS(string=css)
-
-def render(html_raw, out="out.pdf", layout="A4", stylesheets=[], use_default_css=True, base_url=None, variables={}):
-    font_config = FontConfiguration()
-    css = [page_format(layout), code_css]
-    if use_default_css:
-        css.append(default_css)
+def render(html, path="out.pdf", layout="A4", variables={}, base_url=None, input_stylesheets=[], title=None, subtitle=None, default_style=True):
     if not base_url:
         base_url = f"file://{os.getcwd()}/"
-    if len(variables) > 0:
-        css.append(variable_css(variables))
-    html_final = html_raw
-    for stylesheet in stylesheets:
-        css.append(CSS(stylesheet, font_config=font_config, base_url=base_url))
-    html = HTML(string=html_final, base_url=base_url)
-    html.write_pdf(out, stylesheets=css, font_config=font_config)
+
+    stylesheets = [
+        variable_css(variables),
+        page_format(layout),
+    ]
+
+    if default_style:
+        print("using default style")
+        stylesheets.append(default_css)
+
+    for stylesheet in input_stylesheets:
+        stylesheets.append(CSS(stylesheet, font_config=font_config, base_url=base_url))
+
+    html = HTML(string=html, base_url=base_url)
+    html.write_pdf(
+        path,
+        stylesheets=stylesheets,
+        font_config=font_config
+    )
