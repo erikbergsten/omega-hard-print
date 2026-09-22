@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "omega-hard-print"
-version = "0.4.0"
+version = "0.4.1"
 authors = [
   { name="Erik Bergsten", email="erikbergsten94@gmail.com" },
 ]
@@ -20,7 +20,7 @@ dependencies = [
 allow-direct-references = true
 
 [project.scripts]
-omega_hard_print = "omega_hard_print.__main__:main"
+omega-hard-print = "omega_hard_print.__main__:main"
 
 [tool.hatch.build.targets.wheel]
 packages = ["omega_hard_print"]

@@ -9,9 +9,12 @@ RUN apk add font-dejavu
 WORKDIR /app
 
 COPY pyproject.toml .
-RUN uv sync
 COPY omega_hard_print omega_hard_print
+
+ENV PATH=$PATH:/root/.local/bin
+
+RUN uv tool install .
 
 WORKDIR /work
 
-ENTRYPOINT ["/app/.venv/bin/python3", "-m", "omega_hard_print"]
+ENTRYPOINT ["omega-hard-print"]
