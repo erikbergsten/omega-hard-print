@@ -7,7 +7,7 @@ def parse_args():
 
     parser.add_argument(
         "inputs",
-        nargs="+",
+        nargs="*",
         type=str,
         help=(
             "Path(s) to the input file(s). "
@@ -26,6 +26,14 @@ def parse_args():
         type=str,
         default="out.pdf",
         help="Path to the output file (default: out.pdf)",
+    )
+
+    parser.add_argument(
+        "-t",
+        "--template",
+        type=str,
+        default=None,
+        help="jinja template to render content",
     )
 
     parser.add_argument(

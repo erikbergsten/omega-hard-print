@@ -14,6 +14,7 @@ dependencies = [
   "weasyprint",
   "mistune>=3.2.0",
   "beautifulsoup4>=4.15.0",
+  "jinja2>=3.1.6",
 ]
 
 [tool.hatch.metadata]
