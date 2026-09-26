@@ -9,11 +9,11 @@ def generate_title_page(title, subtitle=None):
     out.write('</div>\n')
     return out.getvalue()
 
-def get_title(args):
-    if args.title_page:
-        return Path(args.title_page).read_text() + "\n"
-    elif args.title:
-        return generate_title_page(args.title, args.subtitle) + "\n"
+def get_title(title_page=None, title=None, subtitle=None):
+    if title_page:
+        return Path(title_page).read_text() + "\n"
+    elif title:
+        return generate_title_page(title, subtitle) + "\n"
     else:
         return ""
 

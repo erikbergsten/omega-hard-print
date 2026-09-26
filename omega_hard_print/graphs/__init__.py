@@ -21,8 +21,8 @@ def line_chart(title, labels, lines):
         line_chart.add(key, value)
     return line_chart.render().decode('utf-8')
 
-def pie_chart(title, data):
-    pie_chart = pygal.Pie(style=default_style)
+def pie_chart(title, data, inner_radius=0):
+    pie_chart = pygal.Pie(style=default_style, inner_radius=inner_radius)
     pie_chart.title = title
     for key, value in data.items():
         pie_chart.add(key, value)
