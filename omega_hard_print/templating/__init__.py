@@ -21,9 +21,9 @@ loader = ChoiceLoader(loaders)
 
 env = Environment(loader=loader)
 
-def template(file, html):
+def template(file, html, data):
     text = Path(file).read_text()
     string_templates["tpl"] = text
     tpl = env.get_template("tpl")
     content, toc = parse_content(html)
-    return tpl.render(chapters=content, toc=toc)
+    return tpl.render(chapters=content, toc=toc, **data)

@@ -57,6 +57,18 @@ def parse_args():
     )
 
     parser.add_argument(
+        "-d",
+        "--data",
+        dest="data",
+        default=[],
+        action="append",
+        help=(
+            "Path to a data file. "
+            "May be supplied multiple times to add more data."
+        ),
+    )
+
+    parser.add_argument(
         "-v",
         "--variable",
         dest="variables",
