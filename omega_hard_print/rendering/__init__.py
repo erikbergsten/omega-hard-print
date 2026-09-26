@@ -7,7 +7,7 @@ from .styles import default_css, page_format, variable_css
 
 font_config = FontConfiguration()
 
-def render(html, path="out.pdf", layout="A4", variables={}, base_url=None, input_stylesheets=[], title=None, subtitle=None, default_style=True):
+def render(html, path="out.pdf", layout="A4", variables={}, base_url=None, input_stylesheets=[], default_style=True):
     if not base_url:
         base_url = f"file://{os.getcwd()}/"
 

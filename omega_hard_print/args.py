@@ -7,7 +7,7 @@ def parse_args():
 
     parser.add_argument(
         "inputs",
-        nargs="+",
+        nargs="*",
         type=str,
         help=(
             "Path(s) to the input file(s). "
@@ -29,6 +29,14 @@ def parse_args():
     )
 
     parser.add_argument(
+        "-t",
+        "--template",
+        type=str,
+        default=None,
+        help="jinja template to render content",
+    )
+
+    parser.add_argument(
         "-u",
         "--base-url",
         type=str,
@@ -45,6 +53,18 @@ def parse_args():
         help=(
             "Path to a stylesheet file. "
             "May be supplied multiple times to apply multiple stylesheets in order."
+        ),
+    )
+
+    parser.add_argument(
+        "-d",
+        "--data",
+        dest="data",
+        default=[],
+        action="append",
+        help=(
+            "Path to a data file. "
+            "May be supplied multiple times to add more data."
         ),
     )
 
